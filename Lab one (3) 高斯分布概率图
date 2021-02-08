@@ -1,0 +1,11 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+N = 1000
+x1 = np.zeros(N)
+for n in range(N):
+    x1[n] = np.sum(np.random.rand(12,1)) - np.sum(np.random.rand(12,1))
+fig, ax = plt.subplots(figsize=(5,5))
+ax.hist(x1, 20)
+
+plt.show()

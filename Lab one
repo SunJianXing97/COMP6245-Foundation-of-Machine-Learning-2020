@@ -1,0 +1,25 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.array([1, 2])
+y = np.array([-2, 1])
+a = np.dot(x, y)
+print(a)
+b = np.linalg.norm(x)
+c = np.sqrt(x[0]**2 + x[1]**2)
+print(b, c)
+theta = np.arccos(np.dot(x,y) / (np.linalg.norm(x) * np.linalg.norm(x)))
+B = np.array([[3,2,1], [2,6,5], [1,5,9]], dtype=float)
+print(B)
+print(B - B.T)
+z = np.random.rand(3)
+v = B @ z
+print(v.shape)
+print(z.T @ B @ z)
+print(np.trace(B))
+print(np.linalg.det(B))
+D, U = np.linalg.eig(B)
+print(D)
+print(U)
+print(np.dot(U[:,0], U[:,1]))
+print(U @ U.T)

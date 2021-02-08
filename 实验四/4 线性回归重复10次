@@ -1,0 +1,57 @@
+from sklearn.model_selection import KFold
+
+def error(t, t_hat):
+    return((t - t_hat)**2).mean()
+kf = KFold(n_splits=10)
+f=1
+for train_idx, test_idx in kf.split(X_scaled, y):
+    X_train = X_scaled[train_idx]
+    X_test = X_scaled[test_idx]
+    y_train = y[train_idx]
+    y_test = y[test_idx]
+    
+    N_train, p_train = len(X_train),len(y_train)
+    N_test, p_test = len(X_test), len(y_test)
+
+    U_train = np.zeros((N_train, M))
+    for i in range(N_train):
+        for j in range(M):
+            U_train[i,j] = gaussian(X_train[i,:],C_kmeans[j,:],sigma_many)
+
+    #pseudo inverse solution for linear part on train data
+    l_train =np.linalg.inv(U_train.T @ U_train) @ U_train.T @ y_train
+
+    U_test = np.zeros((N_test,M))
+    for i in range(N_test):
+        for j in range(M):
+            U_test[i,j] = gaussian(X_test[i,:],C_kmeans[j,:],sigma_many)
+
+    #predicted  values on training,test data
+    yh_train = U_train @ l_train
+    yh_test = U_test @ l_train
+
+    fig, axes = plt.subplots(nrows=1,ncols=2,figsize=(6,3))
+
+    axes[0].scatter(y_train,yh_train,c='m',s=3)
+    axes[0].grid(True)
+    axes[0].set_title("Train Data",fontsize=14)
+    axes[0].set_xlabel("True Target",fontsize=12)
+    axes[0].set_xlim(0,400)
+    axes[0].set_ylim(0,400)
+
+    axes[1].scatter(y_test,yh_test,c='m',s=3)
+    axes[1].grid(True)
+    axes[1].set_title("Test Data",fontsize=14)
+    axes[1].set_xlabel("True Target",fontsize=12)
+    axes[1].set_xlim(0,400)
+    axes[1].set_ylim(0,400)
+
+    train_err = error(y_train, yh_train)
+    test_err = error(y_test, yh_test)
+    print(train_err)
+    print(test_err)
+#    print('--Fold{:d}--'.format(f))
+#    print('Train err:{:,3f}'.format(train_err))
+#    print('Test err:{:,3f}'.format(test_err))
+    f+=1
+    

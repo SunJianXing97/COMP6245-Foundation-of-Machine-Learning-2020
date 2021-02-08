@@ -1,0 +1,19 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+C = np.array([[2,3], [3,8]])
+A = np.linalg.cholesky(C)
+print(A @ A.T)
+print(A)
+X = np.random.randn(3000,2)
+Y = X @ A
+print(X.shape)
+print(Y.shape)
+
+fig, ax = plt.subplots(figsize=(5,5))
+ax.scatter(X[:,0], X[:,1], c="r", s=4)
+ax.scatter(Y[:,0], Y[:,1], c="b", s=4)
+ax.set_xlim(-6, 6)
+ax.set_ylim(-6, 6)
+
+plt.show()

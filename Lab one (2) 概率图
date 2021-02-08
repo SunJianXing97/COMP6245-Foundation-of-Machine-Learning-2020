@@ -1,0 +1,23 @@
+import matplotlib.pyplot as plt
+import numpy as np
+x = np.random.rand(1000,1)
+x = np.random.rand(1000,1)
+fig, ax = plt.subplots(nrows=1, ncols=2,figsize=(10,4))
+n1bins, n2bins = 4, 40
+ax[0].hist(x, bins=n1bins)
+ax[0].set_ylim(0,250)
+ax[0].set_xlabel("Bins", fontsize=16)
+ax[0].set_ylabel("Count", fontsize=16)
+ax[0].tick_params(axis='both', which='major', labelsize=14)
+ax[0].set_title("Histogram: bins=%4d"%(n1bins), fontsize=16)
+ax[1].hist(x, bins=n2bins)
+ax[1].set_ylim(0,250)
+ax[1].set_xlabel("Bins", fontsize=16)
+ax[1].set_ylabel("Count", fontsize=16)
+ax[1].tick_params(axis='both', which='major', labelsize=14)
+ax[1].set_title("Histogram: bins=%4d"%(n2bins), fontsize=16)
+
+
+
+plt.savefig("histograms_uniform.png")
+plt.tight_layout()

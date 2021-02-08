@@ -1,0 +1,28 @@
+from sklearn import preprocessing
+
+X_scaled = preprocessing.scale(X)
+ 
+normalize_sigma = 50
+sigmas = [ ] 
+for _ in range(normalize_sigma):
+    x1 = X[np.floor(np.random.rand()*N).astype(int),:]
+    x2 = X[np.floor(np.random.rand()*N).astype(int),:]
+    sigmas.append(np.linalg.norm(x1-x2))
+sigma_many = np.mean(sigmas)
+print(sigma_many)
+
+for i in range(N):
+    for j in range(M):
+        U[i,j] = gaussian(X[i,:], C[j,:], sigma)
+# Pseudo inverse solution for linear part
+#
+l = np.linalg.inv(U.T @ U) @ U.T @ y
+# Predicted values on training data
+#
+yh = U @ l
+fig, ax = plt.subplots(figsize=(3,3))
+ax.scatter(y, yh, c='m', s=3)
+ax.grid(True)
+ax.set_title("Training Set", fontsize=14)
+ax.set_xlabel("True Target", fontsize=12)
+ax.set_ylabel("Prediction", fontsize=12)

@@ -1,0 +1,36 @@
+%matplotlib inline
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import lasso_path
+from sklearn import datasets
+from sklearn.metrics import mean_squared_error
+alphas=np.arange(0.0,0.2,step=0.01)
+errors=[]
+nonzeros=[]
+for alpha in alphas:
+    ll=Lasso(alpha=alpha, tol = 1)
+    ll.fit(X_train,t_train)
+    nonzero=np.count_nonzero(ll.coef_)
+    nonzeros.append(nonzero)
+    errors.append(mean_squared_error(t_test,ll.predict(X_test)))
+    wl=list(ll.coef_)
+#[2239, 1585, 1026, 957, 1560, 271, 1542, 1557, 241, 1626]
+inxten=[]
+for i in np.arange(0,10,step=1):
+    inxten.append(wl.index(max(wl)))
+    wl[wl.index(max(wl))]=0
+
+    
+fig,ax=plt.subplots(nrows=1,ncols=2,figsize=(10,4))
+ax[0].plot(alphas,errors)
+ax[0].set_xlabel('alpha')
+ax[0].set_ylabel('Test Error')
+
+ax[1].plot(alphas,nonzeros)
+ax[1].set_xlabel('alpha')
+ax[1].set_ylabel('number of non-zero coeﬃcients')
+
+
+
+print ('Alpha:{:3f}'.format(alpha))
+print ('Error:{:3f}'.format(error))

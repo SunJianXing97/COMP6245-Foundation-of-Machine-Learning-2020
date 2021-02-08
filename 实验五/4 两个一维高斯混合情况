@@ -1,0 +1,13 @@
+import matplotlib
+
+C = np.array([[2,1], [1,2]], np.float32)
+
+Ci = np.linalg.inv(2*C)
+uF = Ci @ (m1-m2)
+print(uF.shape)
+yp1 = X1 @ uF
+yp2 = X2 @ uF
+matplotlib.rcParams.update({'font.size': 16})
+plt.hist(yp1, bins=40,alpha=0.5)
+plt.hist(yp2, bins=40,alpha=0.5)
+plt.savefig('histogramprojections.png')

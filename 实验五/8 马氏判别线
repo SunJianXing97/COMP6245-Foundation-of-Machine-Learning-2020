@@ -1,0 +1,100 @@
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from scipy.spatial import distance
+
+def classify_euclidean(xs, pred_m1, pred_m2):
+    preds = []
+    for x in xs:
+        d1 = np.linalg.norm(x - pred_m1)
+        d2 = np.linalg.norm(x - pred_m2)
+        if d1 < d2:
+            preds.append(0)
+        else:
+            preds.append(1)
+    return preds
+
+def mahalanobis_dist(x,m,c):
+    #return distance.mahalanobis(x,m,c)
+    c_inv = np.linalg.inv(c)
+    return np.sqrt(np.dot((x-m).T, np.dot(c_inv,(x-m))))
+
+def classify_mahalanobis(xs, pred_m1, pred_m2, pred_c1, pred_c2):
+    preds = []
+    for x in xs:
+        d1 = mahalanobis_dist(x, pred_m1, pred_c1)
+        d2 = mahalanobis_dist(x, pred_m2, pred_c2)
+        if d1 < d2:
+            preds.append(0)
+        else:
+            preds.append(1)
+    return preds
+    
+m1 = np.asarray([0, 3])
+c1 = np.asarray([[2, 1],[1, 2]])
+
+m2 = np.asarray([2, 1])
+c2 = np.asarray([[1, 0],[0, 1]])
+
+ps1 = gauss_2D_sample(m1,c1)
+ps2 = gauss_2D_sample(m2,c2)
+
+xs = np.concatenate((ps1,ps2))
+ys = [0] * len(ps1) + [1] * len(ps2)
+ys = np.asarray(ys)
+
+print(xs.shape)
+print(ys.shape)
+
+x_train, x_test, y_train, y_test = train_test_split(xs, ys, test_size=0.2)
+
+print(x_train.shape)
+print(x_test.shape)
+print(y_train.shape)
+print(y_test.shape)
+
+x_train_clz_0 = x_train[y_train == 0]
+x_train_clz_1 = x_train[y_train == 1]
+
+pred_m1 = np.mean(x_train_clz_0,axis=0)
+pred_m2 = np.mean(x_train_clz_1,axis=0)
+pred_c1 = np.cov(x_train_clz_0.T)
+pred_c2 = np.cov(x_train_clz_1.T)
+
+
+print('Pred m1:\n', pred_m1)
+print('Pred m2:\n', pred_m2)
+print('Pred c1:\n', pred_c1)
+print('Pred c2:\n', pred_c2)
+
+pred_train_euc = classify_euclidean(x_train, pred_m1, pred_m2)
+pred_test_euc = classify_euclidean(x_test, pred_m1, pred_m2)
+
+pred_train_mah = classify_mahalanobis(x_train, pred_m1, pred_m2, pred_c1, pred_c2)
+pred_test_mah = classify_mahalanobis(x_test, pred_m1, pred_m2, pred_c1, pred_c2)
+
+train_acc_euc = accuracy_score(pred_train_euc, y_train)
+test_acc_euc = accuracy_score(pred_test_euc, y_test)
+
+train_acc_mah = accuracy_score(pred_train_mah, y_train)
+test_acc_mah = accuracy_score(pred_test_mah, y_test)
+
+print('Euc Train Acc:{:.3f}'.format(train_acc_euc))
+print('Euc Test Acc:{:.3f}'.format(test_acc_euc))
+print('Mah Train Acc:{:.3f}'.format(train_acc_mah))
+print('Mah Test Acc:{:.3f}'.format(test_acc_mah))
+
+euc_m = (pred_m1[0] - pred_m2[0]) / (pred_m2[1] - pred_m1[1])
+euc_c = (pred_m2[0]**2 + pred_m2[1]**2) - (pred_m1[0]**2 - pred_m1[1]**2) / (2*(pred_m2[1] - pred_m1[1]))
+euc_p1x = -3
+euc_p2x = 4
+euc_p1y = euc_m * euc_p1x + euc_c
+euc_p2y = euc_m * euc_p2x + euc_c
+
+fig,ax = plt.subplots(nrows=1, ncols=1, figsize=(8,8))
+ax.scatter(ps1[:,0], ps1[:,1], alpha=0.2)
+ax.scatter(ps2[:,0], ps2[:,1], alpha=0.2)
+ax.scatter(m1[0], m1[1], color='b')
+ax.scatter(m2[0], m2[1], color='r')
+ax.scatter(pred_m1[0], pred_m1[1], color='b',marker='x')
+ax.scatter(pred_m2[0], pred_m2[1], color='r',marker='x')
+ax.plot([euc_p1x, euc_p2x],[euc_p1y, euc_p2y], color='m')

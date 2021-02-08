@@ -1,0 +1,37 @@
+from sklearn.metrics import accuracy_score
+
+tps = []
+fps = []
+accs = []
+
+for i,thresh in enumerate(thRange):
+    tp = len(proj1[proj1 >= thresh])
+    fp = len(proj2[proj2 > thresh])
+    tn = len(proj2[proj2 <= thresh])
+    
+    tpr = tp / len(proj1)
+    fpr = fp / len(proj2)
+    tps.append(tpr)
+    fps.append(fpr)
+    
+    acc = (tp + tn)/(len(proj1) + len(proj2))
+    accs.append(acc)
+    
+fig, ax = plt.subplots(nrows=2, ncols=1, figsize=(8, 12),
+                     gridspec_kw={'height_ratios':[1,2]}, sharex=True)
+
+print('Max Acc:{:.3f}'.format(np.max(accs)))
+print('Thresh:{:.3f}'.format(thRange[np.argmax(accs)]))
+
+ax[0].hist(proj1, 25, alpha=0.5)
+ax[0].hist(proj2, 25, alpha=0.5)
+ax[0].grid(True)
+
+ax[1].plot(thRange, tps, label='True Positive')
+ax[1].plot(thRange, fps, label='False Positive')
+ax[1].plot(thRange, accs, label='Accuracy')
+ax[1].set_xlabel('Threashold')
+ax[1].set_ylabel('Rate')
+ax[1].legend(loc='best')
+ax[1].grid(True)
+    

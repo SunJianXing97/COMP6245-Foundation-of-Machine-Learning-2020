@@ -1,0 +1,26 @@
+# Define a range over which to slide a threshold
+#
+pmin = np.min( np.array( (np.min(yp1), np.min(yp2) )))
+pmax = np.max( np.array( (np.max(yp1), np.max(yp2) )))
+print(pmin, pmax)
+# Set up an array of thresholds
+#
+nRocPoints = 50;
+thRange = np.linspace(pmin, pmax, nRocPoints)
+ROC = np.zeros( (nRocPoints, 2) )
+# Compute True Positives and False positives at each threshold
+#
+for i in range(len(thRange)):
+    thresh = thRange[i]
+    TP = len(yp2[yp2 > thresh]) * 100 / len(yp2)
+    FP = len(yp1[yp1 > thresh]) * 100 / len(yp1)
+    ROC[i,:] = [TP, FP]
+# Plot ROC curve
+#
+fig, ax = plt.subplots(figsize=(6,6))
+ax.plot(ROC[:,0], ROC[:,1], c='m')
+ax.set_xlabel('False Positive')
+ax.set_ylabel('True Positive')
+ax.set_title('Receiver Operating Characteristics')
+ax.grid(True)
+plt.savefig('rocCurve.png')

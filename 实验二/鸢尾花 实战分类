@@ -1,0 +1,90 @@
+import matplotlib.pyplot as plt
+import numpy as np
+import csv
+from sklearn.linear_model import Perceptron
+from sklearn.metrics import accuracy_score
+
+def PercentCorrect(Inputs, targets, weights):
+    N = len(targets)
+    nCorrect = 0
+    for n in range(N):
+        OneInput = Inputs[n,:]
+        if (targets[n] * np.dot(OneInput, weights) > 0):
+            nCorrect +=1
+    return 100*nCorrect/N
+
+data = []
+with open("iris.data.txt","r",encoding="utf-8") as f:
+    f_read = csv.reader(f)
+    next(f_read)
+    for v in f_read:
+        data.append(v)
+data=np.array(data)
+print(data.shape)
+data=data.astype(float)
+X=data[:,:4]
+y=data[:,4]
+#print(X)
+X1=X[0:49]
+X2=X[50:99]
+
+fig, ax = plt.subplots(figsize=(10,10))
+ax.scatter(X1[:,0], X1[:,1], c="r", s=4)
+ax.scatter(X2[:,0], X2[:,1], c="b", s=4)
+#ax.scatter(X[:,0], X[:,1], c="c", s=4)
+
+
+
+# Training and test sets (half half)
+#
+X_train = Xr[0:49]
+y_train = yr[0:49]
+X_test = Xr[50:99]
+y_test = yr[50:99]
+print(X_train.shape, y_train.shape, X_test.shape, y_test.shape)
+Ntrain = 49;
+Ntest = 49;
+
+print(X_train)
+w = np.random.randn(4)
+print(w)
+# What is the performance with the initial random weights?
+#
+print('Initial Percentage Correct: %6.2f' %(PercentCorrect(X_train, y_train, w)))
+# Fixed number of iterations (think of better stopping criterion)
+#
+MaxIter=1000
+# Learning rate (change this to see convergence changing)
+#
+alpha = 0.002
+# Space to save answers for plotting
+#
+P_train = np.zeros(MaxIter)
+P_test = np.zeros(MaxIter)
+# Main Loop
+#
+for iter in range(MaxIter):
+    # Select a data item at random
+    #
+    r = np.floor(np.random.rand()*Ntrain).astype(int)
+    x = X_train[r,:]
+    # If it is misclassified, update weights
+    #
+    if (y_train[r] * np.dot(x, w) < 0):
+        w += alpha * y_train[r] * x
+    # Evaluate trainign and test performances for plotting
+    #
+    P_train[iter] = PercentCorrect(X_train, y_train, w);
+    P_test[iter] = PercentCorrect(X_test, y_test, w);
+print('Percentage Correct After Training: %6.2f %6.2f'
+    %(PercentCorrect(X_train, y_train, w), PercentCorrect(X_test, y_test, w)))
+
+fig, ax = plt.subplots(figsize=(6,4))
+ax.plot(range(MaxIter), P_train, 'b', label = "Training")
+ax.plot(range(MaxIter), P_test, 'r', label = "Test")
+ax.grid(True)
+ax.legend()
+ax.set_title('Perceptron Learning')
+ax.set_ylabel('Training and Test Accuracies', fontsize=14)
+ax.set_xlabel('Iteration', fontsize=14)
+plt.savefig('learningCurves.png')

@@ -1,0 +1,38 @@
+from sklearn.linear_model import Lasso
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import datasets
+from sklearn.linear_model import LinearRegression
+
+diabetes = datasets.load_diabetes()
+X = diabetes.data
+t = diabetes.target
+
+gamma = 0.5
+w = np.linalg.inv(X.T @ X) @ X.T @ t
+wR = np.linalg.inv(X.T @ X + gamma*np.identity(NumFeatures)) @ X.T @ t
+ll = Lasso(alpha=0.2)
+ll.fit(X, t)
+th_lasso = ll.predict(X)
+
+
+th0 = X @ w
+th1 = X @ wR
+th2 = X @ ll.coef_
+
+fig, ax = plt.subplots(nrows=2, ncols=3, figsize=(15,8))
+ax[0][0].set_title("Pseudo-inverse solution", fontsize=20)
+ax[0][0].bar(np.arange(len(w)), w)
+ax[0][1].set_title("Rgularized solution", fontsize=20)
+ax[0][1].set_ylim(-800,800)
+ax[0][1].bar(np.arange(len(wR)),wR)
+ax[0][2].set_title("Loss(sparse) solution", fontsize=20)
+ax[0][2].set_ylim(-800,800)
+ax[0][2].bar(np.arange(len(ll.coef_)),ll.coef_)
+
+ax[1][0].scatter(t, th0, c='c', s=3)
+ax[1][1].scatter(t, th1, c='r', s=3)
+ax[1][2].scatter(t, th2, c='b', s=3)
+
+plt.show()
+plt.savefig("solutions.png")

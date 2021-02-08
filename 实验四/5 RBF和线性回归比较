@@ -1,0 +1,10 @@
+from matplotlib.pyplot import boxplot
+
+fig,axes = plt.subplots(nrows=1,ncols=2,figsize=(9,3))
+axes[0].boxplot(yh_train)
+axes[0].set_title('RBF Models')
+axes[1].boxplot(yh_test)
+axes[1].set_title(' Linear Regression Models')
+axes[1].set_ylim(0,1000)
+
+

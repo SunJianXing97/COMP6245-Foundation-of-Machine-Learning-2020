@@ -1,0 +1,41 @@
+def gauss_2D_sample(m, c, n=200):
+    return np.random.multivariate_normal(m,c,n)
+
+w_rand = np.random.uniform(size=(2,)) - 0.5
+w_mean = m1 - m2
+print('W Fisher:', uF)
+print('W Read:', w_rand)
+print('W Mean:', w_mean)
+
+proj_rand1 = X1 @ w_rand
+proj_rand2 = X2 @ w_rand
+roc_rand,_ = calculate_roc(proj_rand1,proj_rand2)
+auc_rand = calculate_auc(roc_rand)
+
+proj_mean1 = X1 @ w_mean
+proj_mean2 = X2 @ w_mean
+roc_mean,_ = calculate_roc(proj_mean1,proj_mean2)
+auc_mean = calculate_auc(roc_mean)
+
+print('AUC Fisher:{:.3f}'.format(auc))
+print('AUC Random:{:.3f}'.format(auc_rand))
+print('AUC Mean:{:.3f}'.format(auc_mean)) 
+
+fig,ax = plt.subplots(nrows=3, ncols=1, figsize=(8,20),gridspec_kw={'height_ratios':[2,1,1]})
+plot_roc(roc,ax[0],color='m',label='Fisher')
+plot_roc(roc_rand,ax[0], label='Random')
+plot_roc(roc_mean,ax[0], label='Mean Intersection')
+
+ax[0].legend(loc='best')
+
+ax[1].hist(proj_rand1, 25, alpha=0.5)
+ax[1].hist(proj_rand2, 25, alpha=0.5)
+ax[1].grid(True)
+ax[1].set_title('Projection for Random Vector')
+
+ax[2].hist(proj_mean1, 25, alpha=0.5)
+ax[2].hist(proj_mean2, 25, alpha=0.5)
+ax[2].grid(True)
+ax[2].set_title('Projection for Mean Intersection Vector')
+
+

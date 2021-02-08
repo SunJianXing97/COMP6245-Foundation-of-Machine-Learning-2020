@@ -1,0 +1,19 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
+MaxTrial = 2000
+sampleSizeRange = np.linspace(100, 2000, 40)
+plotVar = np.zeros(len(sampleSizeRange))
+
+for sSize in range(len(sampleSizeRange)):
+    numSamples = int(sampleSizeRange[sSize])
+    vStrial = np.zeros(MaxTrial)
+    for trial in range(MaxTrial):
+        xx = np.random.randn(numSamples,1)
+        vStrial[trial] = np.var(xx)
+    plotVar[sSize] = np.var(vStrial)
+fig, ax = plt.subplots(figsize=(4,4))
+ax.plot((plotVar))
+
+plt.savefig("histograms_uniform.png")
+plt.tight_layout()
